@@ -1,0 +1,10 @@
+.vscode
+*.o
+*.out
+*.a
+*.gch
+.clang-format
+push_swap
+checker
+/push_swap_visualizer
+/push_swap_tester
