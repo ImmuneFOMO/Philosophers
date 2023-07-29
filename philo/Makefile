@@ -3,7 +3,7 @@ NAME := philo
 FILES := files/philosopher.c
 OFILES := $(FILES:.c=.o)
 
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -pthread
 CC := cc
 
 all: $(NAME)
@@ -19,4 +19,4 @@ fclean: clean
 
 re: fclean all
 
-.phony: re, fclean, clean, all
+.PHONY: re, fclean, clean, all
