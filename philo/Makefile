@@ -1,6 +1,6 @@
 NAME := philo
 
-FILES := files/philosopher.c
+FILES := files/philosopher.c files/helpers.c
 OFILES := $(FILES:.c=.o)
 
 CFLAGS := -Wall -Wextra -Werror -pthread

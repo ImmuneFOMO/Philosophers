@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/07/29 20:48:45 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/07/30 23:17:58 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	start_hands(hands_t **hands)
 
 int	ft_isnums(char **str)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 1;
 	while (str[i])
@@ -56,12 +56,20 @@ int	ft_isnums(char **str)
 	return (0);
 }
 
-void ft_check_args(char **argv)
+void	ft_check_args(char **argv)
 {
+	int	i;
+
+	i = 0;
 	if (ft_isnums(argv))
 	{
 		printf("is not num\n");
 		exit(1);
+	}
+	while (argv[++i])
+	{
+		if (ft_atoi(argv[i]) <= 0)
+			exit(1);
 	}
 }
 
@@ -88,6 +96,6 @@ int	main(int argc, char **argv)
 		pthread_mutex_destroy(&hands->right_h);
 		free(hands);
 	}
-	printf("return 0\n");
+	printf("return (0)\n");
 	return (0);
 }
