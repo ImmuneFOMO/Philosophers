@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/07/31 17:21:21 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/03 23:50:35 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,25 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef struct hands
+typedef struct person
 {
-	int				num_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-    int             num_times_feed;
-	pthread_mutex_t	left_h;
-	pthread_mutex_t	right_h;
-	int				test;
-}					hands_t;
+	pthread_mutex_t *left_hand;
+	pthread_mutex_t *right_hand;
+	int		person_do;
+	//0 - nothing, die - 1, eat - 2, sleep - 3, think - 4, fed up - 5;
+}	person_t
+
+typedef struct global
+{
+	long long		num_philo;
+	long long		num_fed;
+	int				go;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+    long long		num_times_feed;
+	person_t		philo;
+}					global_t;
 
 //philosopher.c
 void				ft_check_args(char **argv, hands_t **philos);

@@ -4,4 +4,4 @@
 *.a
 *.gch
 .clang-format
-.philo
+/philo
