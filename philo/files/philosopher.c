@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/03 23:50:49 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/06 23:22:05 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,6 @@
 // 	return (NULL);
 // }
 
-void	start_hands(hands_t **hands)
-{
-	(*hands)->test = 0;
-	pthread_mutex_init(&(*hands)->left_h, NULL);
-	pthread_mutex_init(&(*hands)->right_h, NULL);
-}
-
 int	ft_isnums(char **str)
 {
 	int	i;
@@ -56,49 +49,38 @@ int	ft_isnums(char **str)
 	return (0);
 }
 
-void	ft_check_args(char **argv, hands_t **philos)
+int	ft_check_args(char **argv, global_t *philos)
 {
 	int	i;
 
 	i = 0;
 	if (ft_isnums(argv))
-		exit(1);
+		return (1);
 	while (argv[++i])
 	{
 		if (ft_atoi(argv[i]) <= 0)
-			exit(1);
+			return (1);
 	}
-	*philos = (hands_t *)malloc(sizeof(hands_t));
-	(*philos)->num_philo = ft_atoi(argv[1]);
-	(*philos)->time_to_die = ft_atoi(argv[2]);
-	(*philos)->time_to_eat = ft_atoi(argv[3]);
-	(*philos)->time_to_sleep = ft_atoi(argv[4]);
-	(*philos)->num_times_feed = -1;
+	philos->num_philo = ft_atoi(argv[1]);
+	philos->time_to_die = ft_atoi(argv[2]);
+	philos->time_to_eat = ft_atoi(argv[3]);
+	philos->time_to_sleep = ft_atoi(argv[4]);
+	philos->num_times_feed = -1;
 	if (argv[5])
-		(*philos)->num_times_feed = ft_atoi(argv[5]);
-	(*philos)->num_fed = 0;
-	(*philos)->go = 1;
-	
+		philos->num_times_feed = ft_atoi(argv[5]);
+	philos->num_fed = 0;
+	philos->go = 1;
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	long long	time;
-	long long	time_2;
-	global_t		*global;
+	global_t	global;
 
-	(void)argv;
 	if (argc >= 5 && argc <= 6)
 	{
-		current_time(&time);
-		ft_check_args(argv, &hands);
-		if (!hands)
-			exit(1);
-		start_hands(&hands);
-		usleep(10000);
-		current_time(&time_2);
-		printf("past:%lld\n", time_2 - time);
-		free(hands);
+		if (ft_check_args(argv, &global))
+			return (-1);
 	}
 	return (0);
 }
