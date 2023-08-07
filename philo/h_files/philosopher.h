@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/06 22:39:18 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/07 23:50:29 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ typedef struct global
 	long long		time_to_eat;
 	long long		time_to_sleep;
 	long long		num_times_feed;
+	pthread_mutex_t think;
+	pthread_mutex_t eat;
+	pthread_mutex_t dead;
+	pthread_mutex_t printf;
 	person_t		*person;
 }					global_t;
 

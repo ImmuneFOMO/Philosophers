@@ -3,31 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/06 23:22:05 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/07 23:57:28 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../h_files/philosopher.h"
-
-// void	*test(void *argv)
-// {
-// 	int		i;
-// 	hands_t	*hands;
-
-// 	hands = (hands_t *)argv;
-// 	i = 0;
-// 	while (i < 10000)
-// 	{
-// 		pthread_mutex_lock(&hands->left_h);
-// 		(hands->test)++;
-// 		pthread_mutex_unlock(&hands->left_h);
-// 		i++;
-// 	}
-// 	return (NULL);
-// }
 
 int	ft_isnums(char **str)
 {
@@ -49,7 +32,7 @@ int	ft_isnums(char **str)
 	return (0);
 }
 
-int	ft_check_args(char **argv, global_t *philos)
+int	ft_check_args(char **argv, global_t *global)
 {
 	int	i;
 
@@ -61,15 +44,28 @@ int	ft_check_args(char **argv, global_t *philos)
 		if (ft_atoi(argv[i]) <= 0)
 			return (1);
 	}
-	philos->num_philo = ft_atoi(argv[1]);
-	philos->time_to_die = ft_atoi(argv[2]);
-	philos->time_to_eat = ft_atoi(argv[3]);
-	philos->time_to_sleep = ft_atoi(argv[4]);
-	philos->num_times_feed = -1;
+	global->num_philo = ft_atoi(argv[1]);
+	global->time_to_die = ft_atoi(argv[2]);
+	global->time_to_eat = ft_atoi(argv[3]);
+	global->time_to_sleep = ft_atoi(argv[4]);
+	global->num_times_feed = -1;
 	if (argv[5])
-		philos->num_times_feed = ft_atoi(argv[5]);
-	philos->num_fed = 0;
-	philos->go = 1;
+		global->num_times_feed = ft_atoi(argv[5]);
+	global->num_fed = 0;
+	global->go = 1;
+	return (0);
+}
+
+int	ft_start_philo(global_t *global)
+{
+	pthread_mutex_init(&global->think, NULL);
+	pthread_mutex_init(&global->eat, NULL);
+	pthread_mutex_init(&global->dead, NULL);
+	pthread_mutex_init(&global->printf, NULL);
+	global->person = (person_t *)malloc(sizeof(person_t) * global->num_philo);
+	if (!global->person)
+		return (1);
+	
 	return (0);
 }
 
@@ -81,6 +77,12 @@ int	main(int argc, char **argv)
 	{
 		if (ft_check_args(argv, &global))
 			return (-1);
+		if (ft_start_philo(&global))
+		{
+			free(global.person);
+			return (-1);
+		}
+		free(global.person);
 	}
 	return (0);
 }
