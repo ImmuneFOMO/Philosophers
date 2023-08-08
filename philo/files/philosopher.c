@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/08 01:37:44 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/08 21:43:31 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,12 @@ int	ft_check_args(char **argv, t_global *global)
 
 void *start_life(void *arg)
 {
-	t_global *tmp_global;
-	int i;
+	t_person *philo;
+	long long i;
 
 	i = -1;
-	tmp_global = (t_global *)arg;
-	while (++i < tmp_global->num_philo)
-	{
-		printf("person[%d]_do:%d\n", i, tmp_global->person[i].person_do);
-	}
+	philo = (t_person *)arg;
+	printf("i'm[%lld] my_left_hand:%lld, my_right_hand:%lld\n", philo->id, philo->left_hand, philo->right_hand);
 	printf("test\n");
 	return (NULL);
 }
@@ -82,15 +79,26 @@ int	ft_start_philo(t_global *global)
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
 		return (1);
+	global->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * global->num_philo);
+	if (!global->forks)
+	{
+		free(global->person);
+		return (1);
+	}
 	i = -1;
 	current_time(&global->start_time);
 	while (++i < global->num_philo)
 	{
-		global->person[i].person_do = nothing;
-		global->person[i].left_hand = NULL;
-		global->person[i].right_hand = NULL;
-		global->person[i].id = i;
-		if (pthread_create(&global->person[i].th, NULL, &start_life, global))
+		if (pthread_mutex_init(&global->forks[i], NULL))
+		{
+			free(global->person);
+			free(global->forks);
+			return (1);
+		}
+		global->person[i].left_hand = i;
+		global->person[i].right_hand = (i + 1) % global->num_philo;
+		global->person[i].id = i + 1;
+		if (pthread_create(&global->person[i].th, NULL, &start_life, &global->person[i]))
 			return (0);
 	}
 	i = -1;
@@ -113,7 +121,7 @@ int	main(int argc, char **argv)
 			return (-1);
 		if (ft_start_philo(&global))
 			return (-1);
-		free(global.person);
+		ft_free_philo(&global);
 	}
 	return (0);
 }

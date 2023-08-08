@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/07 23:35:16 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/08 21:26:37 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ void	current_time(long long *fill)
 	if (gettimeofday(&time, NULL))
 		return ;
 	*fill = (time.tv_usec / 1000) + (time.tv_sec * 1000);
+}
+
+void	ft_free_philo(t_global *global)
+{
+	free(global->forks);
+	free(global->person);
 }

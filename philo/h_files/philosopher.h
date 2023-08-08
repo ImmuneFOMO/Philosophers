@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/08 01:30:42 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/08 21:30:43 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,16 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef enum start_time
-{
-	nothing = 0,
-	die = 1,
-	eat = 2,
-	sleeping = 3,
-	think = 4,
-	fed_up = 5
-} t_state;
+typedef struct global t_global; 
 
 typedef struct person
 {
-	pthread_mutex_t	*left_hand;
-	pthread_mutex_t	*right_hand;
-	t_state			person_do;
+	long long		left_hand;
+	long long		right_hand;
 	long long		id;
 	long long		time_last_food;
 	pthread_t		th;
+	t_global		*global;
 }					t_person;
 
 typedef struct global
@@ -53,6 +45,7 @@ typedef struct global
 	pthread_mutex_t eat;
 	pthread_mutex_t dead;
 	pthread_mutex_t printf;
+	pthread_mutex_t	*forks;
 	t_person		*person;
 }					t_global;
 
@@ -62,5 +55,6 @@ int					ft_isnums(char **str);
 //helpers.c
 long long			ft_atoi(const char *str);
 void				current_time(long long *fill);
+void				ft_free_philo(t_global *global);
 
 #endif
