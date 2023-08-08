@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/07 23:57:28 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/08 01:37:44 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_isnums(char **str)
 	return (0);
 }
 
-int	ft_check_args(char **argv, global_t *global)
+int	ft_check_args(char **argv, t_global *global)
 {
 	int	i;
 
@@ -56,32 +56,63 @@ int	ft_check_args(char **argv, global_t *global)
 	return (0);
 }
 
-int	ft_start_philo(global_t *global)
+void *start_life(void *arg)
 {
+	t_global *tmp_global;
+	int i;
+
+	i = -1;
+	tmp_global = (t_global *)arg;
+	while (++i < tmp_global->num_philo)
+	{
+		printf("person[%d]_do:%d\n", i, tmp_global->person[i].person_do);
+	}
+	printf("test\n");
+	return (NULL);
+}
+
+int	ft_start_philo(t_global *global)
+{
+	int i;
+
 	pthread_mutex_init(&global->think, NULL);
 	pthread_mutex_init(&global->eat, NULL);
 	pthread_mutex_init(&global->dead, NULL);
 	pthread_mutex_init(&global->printf, NULL);
-	global->person = (person_t *)malloc(sizeof(person_t) * global->num_philo);
+	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
 		return (1);
+	i = -1;
+	current_time(&global->start_time);
+	while (++i < global->num_philo)
+	{
+		global->person[i].person_do = nothing;
+		global->person[i].left_hand = NULL;
+		global->person[i].right_hand = NULL;
+		global->person[i].id = i;
+		if (pthread_create(&global->person[i].th, NULL, &start_life, global))
+			return (0);
+	}
+	i = -1;
+	while (++i < global->num_philo)
+	{
+		if (pthread_join(global->person[i].th, NULL))
+			return (0);
+	}
 	
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	global_t	global;
+	t_global	global;
 
 	if (argc >= 5 && argc <= 6)
 	{
 		if (ft_check_args(argv, &global))
 			return (-1);
 		if (ft_start_philo(&global))
-		{
-			free(global.person);
 			return (-1);
-		}
 		free(global.person);
 	}
 	return (0);
