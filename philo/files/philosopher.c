@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 01:56:54 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 21:05:31 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,23 +59,12 @@ int	ft_check_args(char **argv, t_global *global)
 void *start_life(void *arg)
 {
 	t_person *philo;
-	long long i;
-	long long time;
-	long long time_2;
 
-	i = -1;
 	philo = (t_person *)arg;
-	pthread_mutex_lock(&philo->global->printf);
-	current_time(&time);
-	usleep(1000);
-	current_time(&time_2);
-	printf("time(usleep):%lld\n", time_2 - time);
-	current_time(&time);
-	ft_custom_sleep(1000, philo->global);
-	current_time(&time_2);
-	printf("time(my):%lld\n", time_2 - time);
-	printf("i'm[%lld] my_left_hand:%lld, my_right_hand:%lld\n", philo->id, philo->left_hand, philo->right_hand);
-	pthread_mutex_unlock(&philo->global->printf);
+	if (philo->global->num_philo > 1 && philo->id % 2)
+		ft_custom_sleep(20, philo->global);
+	
+	
 	return (NULL);
 }
 
@@ -83,9 +72,6 @@ int	ft_start_philo(t_global *global)
 {
 	int i;
 
-	pthread_mutex_init(&global->think, NULL);
-	pthread_mutex_init(&global->eat, NULL);
-	pthread_mutex_init(&global->dead, NULL);
 	pthread_mutex_init(&global->printf, NULL);
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
@@ -134,6 +120,7 @@ int	main(int argc, char **argv)
 			return (-1);
 		if (ft_start_philo(&global))
 			return (-1);
+		ft_die_check(&global);
 		ft_free_philo(&global);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 01:55:39 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 21:09:06 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,60 @@ void	current_time(long long *fill)
 
 void	ft_free_philo(t_global *global)
 {
+	int i;
+
+	i = -1;
+	if (global->num_philo > 1)
+	{
+		while (++i < global->num_philo)
+			pthread_join(global->person->th, 0);
+	}
+	else
+		pthread_detach(global->person[0].th);
+	i = -1;
+	while (++i < global->num_philo)
+		pthread_mutex_destroy(&global->forks[i]);
+	pthread_mutex_destroy(&global->printf);
 	free(global->forks);
 	free(global->person);
 }
 
 void	ft_custom_sleep(long long time, t_global *global)
 {
-	struct timeval st;
-	struct timeval cur;
+	long long st;
+	long long cur;
 
-	gettimeofday(&st, NULL);
-	gettimeofday(&cur, NULL);
+	current_time(&st);
 	while (global->go)
 	{
-		gettimeofday(&cur, NULL);
-		if ((((cur.tv_sec - st.tv_sec) * 1000) + ((cur.tv_usec - st.tv_usec) / 1000)) >= time)
+		current_time(&cur);
+		if ((cur - st) >= time)
 			break ;
-		usleep(10);	
+	}
+}
+
+void	ft_die_check(t_global *global)
+{
+	long long time;
+	long long i;
+	
+	while (global->go && global->num_fed < global->num_philo)
+	{
+		i = -1;
+		while (global->go && global->num_times_feed && global->person[++i].counter_fed >= global->num_times_feed)
+			global->num_fed = i;
+		if (global->num_fed == global->num_philo)
+			global->go = 0;
+		i = -1;
+		current_time(&time);
+		while (++i < global->num_philo && global->go)
+		{
+			if ((time - global->person[i].time_last_food) >= global->time_to_die)
+			{
+				global->go = 0;
+				pthread_mutex_lock(&global->printf);
+				printf("%lld %lld died\n", time, global->person[i].id);
+			}
+		}
 	}
 }
