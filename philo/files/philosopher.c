@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/08 21:43:31 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 01:56:54 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,22 @@ void *start_life(void *arg)
 {
 	t_person *philo;
 	long long i;
+	long long time;
+	long long time_2;
 
 	i = -1;
 	philo = (t_person *)arg;
+	pthread_mutex_lock(&philo->global->printf);
+	current_time(&time);
+	usleep(1000);
+	current_time(&time_2);
+	printf("time(usleep):%lld\n", time_2 - time);
+	current_time(&time);
+	ft_custom_sleep(1000, philo->global);
+	current_time(&time_2);
+	printf("time(my):%lld\n", time_2 - time);
 	printf("i'm[%lld] my_left_hand:%lld, my_right_hand:%lld\n", philo->id, philo->left_hand, philo->right_hand);
-	printf("test\n");
+	pthread_mutex_unlock(&philo->global->printf);
 	return (NULL);
 }
 
@@ -86,7 +97,6 @@ int	ft_start_philo(t_global *global)
 		return (1);
 	}
 	i = -1;
-	current_time(&global->start_time);
 	while (++i < global->num_philo)
 	{
 		if (pthread_mutex_init(&global->forks[i], NULL))
@@ -98,6 +108,9 @@ int	ft_start_philo(t_global *global)
 		global->person[i].left_hand = i;
 		global->person[i].right_hand = (i + 1) % global->num_philo;
 		global->person[i].id = i + 1;
+		global->person[i].global = global;
+		if (global->num_philo > 1)
+			current_time(&global->start_time);
 		if (pthread_create(&global->person[i].th, NULL, &start_life, &global->person[i]))
 			return (0);
 	}

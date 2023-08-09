@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/08 21:26:37 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 01:55:39 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,20 @@ void	ft_free_philo(t_global *global)
 {
 	free(global->forks);
 	free(global->person);
+}
+
+void	ft_custom_sleep(long long time, t_global *global)
+{
+	struct timeval st;
+	struct timeval cur;
+
+	gettimeofday(&st, NULL);
+	gettimeofday(&cur, NULL);
+	while (global->go)
+	{
+		gettimeofday(&cur, NULL);
+		if ((((cur.tv_sec - st.tv_sec) * 1000) + ((cur.tv_usec - st.tv_usec) / 1000)) >= time)
+			break ;
+		usleep(10);	
+	}
 }

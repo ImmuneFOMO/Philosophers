@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/08 21:30:43 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 01:55:56 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,6 @@ int					ft_isnums(char **str);
 long long			ft_atoi(const char *str);
 void				current_time(long long *fill);
 void				ft_free_philo(t_global *global);
+void				ft_custom_sleep(long long time, t_global *global);
 
 #endif
