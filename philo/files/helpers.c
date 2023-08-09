@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 21:09:06 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 23:22:05 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ long long	ft_atoi(const char *str)
 	return (num * s);
 }
 
-void	current_time(long long *fill)
+long long	current_time()
 {
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL))
-		return ;
-	*fill = (time.tv_usec / 1000) + (time.tv_sec * 1000);
+		return (0);
+	return ((time.tv_usec / 1000) + (time.tv_sec * 1000));
 }
 
 void	ft_free_philo(t_global *global)
@@ -67,13 +67,11 @@ void	ft_free_philo(t_global *global)
 void	ft_custom_sleep(long long time, t_global *global)
 {
 	long long st;
-	long long cur;
 
-	current_time(&st);
+	st = current_time();
 	while (global->go)
 	{
-		current_time(&cur);
-		if ((cur - st) >= time)
+		if ((current_time() - st) >= time)
 			break ;
 	}
 }
@@ -91,14 +89,14 @@ void	ft_die_check(t_global *global)
 		if (global->num_fed == global->num_philo)
 			global->go = 0;
 		i = -1;
-		current_time(&time);
+		time = current_time();
 		while (++i < global->num_philo && global->go)
 		{
 			if ((time - global->person[i].time_last_food) >= global->time_to_die)
 			{
 				global->go = 0;
 				pthread_mutex_lock(&global->printf);
-				printf("%lld %lld died\n", time, global->person[i].id);
+				printf("%lld %lld died\n", time - global->start_time, global->person[i].id);
 			}
 		}
 	}

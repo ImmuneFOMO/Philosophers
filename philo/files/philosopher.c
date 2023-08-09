@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 21:05:31 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/09 23:22:31 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,41 @@ void *start_life(void *arg)
 	philo = (t_person *)arg;
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(20, philo->global);
-	
+	while(philo->global->go)
+	{
+		//printf("test %d\n", 1);
+		if (!philo->global->go)
+			return (NULL);
+		if (philo->left_hand < philo->right_hand)
+			pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
+		else
+			pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
+		pthread_mutex_lock(&philo->global->printf);
+		printf("%lld %lld has taken a fork\n",(long long)current_time - philo->global->start_time , philo->id);
+		pthread_mutex_unlock(&philo->global->printf);
+		if (philo->left_hand < philo->right_hand)
+			pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
+		else
+			pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
+		pthread_mutex_lock(&philo->global->printf);
+		printf("%lld %lld has taken a fork\n",(long long)current_time - philo->global->start_time , philo->id);
+		pthread_mutex_unlock(&philo->global->printf);
+		ft_custom_sleep(philo->global->time_to_eat, philo->global);
+		pthread_mutex_lock(&philo->global->printf);
+		printf("%lld %lld is eating\n", (long long)current_time - philo->global->start_time, philo->id);
+		pthread_mutex_unlock(&philo->global->printf);
+		philo->counter_fed++;
+		philo->time_last_food = current_time();
+		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
+		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
+		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
+		pthread_mutex_lock(&philo->global->printf);
+		printf("%lld %lld is sleeping\n", (long long)(current_time - philo->global->start_time) , philo->id);
+		pthread_mutex_unlock(&philo->global->printf);
+		pthread_mutex_lock(&philo->global->printf);
+		printf("%lld %lld is thinking\n", (long long)current_time - philo->global->start_time , philo->id);
+		pthread_mutex_unlock(&philo->global->printf);
+	}
 	
 	return (NULL);
 }
