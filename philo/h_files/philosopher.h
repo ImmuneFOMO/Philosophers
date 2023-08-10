@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 21:39:28 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 22:15:21 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int					ft_start_philo(t_global *global);
 //and main
 //helpers.c
 long long			ft_atoi(const char *str);
-long long			current_time();
+long long			current_time(void);
 void				ft_free_philo(t_global *global);
 void				ft_custom_sleep(long long time, t_global *global);
 void				ft_die_check(t_global *global);

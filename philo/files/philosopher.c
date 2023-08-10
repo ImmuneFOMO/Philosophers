@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 21:40:12 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 22:58:23 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_check_args(char **argv, t_global *global)
 	return (0);
 }
 
-void *start_life(void *arg)
+void	*start_life(void *arg)
 {
 	t_person	*philo;
 
@@ -92,7 +92,7 @@ void *start_life(void *arg)
 
 int	ft_start_philo(t_global *global)
 {
-	int	i;
+	long long	i;
 
 	pthread_mutex_init(&global->printf, NULL);
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
@@ -118,16 +118,12 @@ int	ft_start_philo(t_global *global)
 		global->person[i].right_hand = (i + 1) % global->num_philo;
 		global->person[i].id = i + 1;
 		global->person[i].global = global;
+		global->person[i].time_last_food = 0;
+		global->person[i].counter_fed = 0;
 		if (global->num_philo > 1)
-			current_time(&global->start_time);
+			global->start_time = current_time();
 		if (pthread_create(&global->person[i].th, NULL, \
 		&start_life, &global->person[i]))
-			return (0);
-	}
-	i = -1;
-	while (++i < global->num_philo)
-	{
-		if (pthread_join(global->person[i].th, NULL))
 			return (0);
 	}
 	return (0);
@@ -136,6 +132,7 @@ int	ft_start_philo(t_global *global)
 int	main(int argc, char **argv)
 {
 	t_global	global;
+	long long	i;
 
 	if (argc >= 5 && argc <= 6)
 	{
@@ -144,6 +141,12 @@ int	main(int argc, char **argv)
 		if (ft_start_philo(&global))
 			return (-1);
 		ft_die_check(&global);
+		i = -1;
+		while (++i < global.num_philo)
+		{
+			if (pthread_join(global.person[i].th, NULL))
+				return (0);
+		}
 		ft_free_philo(&global);
 	}
 	return (0);

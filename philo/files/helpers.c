@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 21:41:19 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 23:08:57 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ long long	ft_atoi(const char *str)
 	return (num * s);
 }
 
-long long	current_time()
+long long	current_time(void)
 {
 	struct timeval	time;
 
@@ -46,7 +46,7 @@ long long	current_time()
 
 void	ft_free_philo(t_global *global)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	if (global->num_philo > 1)
@@ -66,7 +66,7 @@ void	ft_free_philo(t_global *global)
 
 void	ft_custom_sleep(long long time, t_global *global)
 {
-	long long st;
+	long long	st;
 
 	st = current_time();
 	while (global->go)
@@ -80,16 +80,8 @@ void	ft_die_check(t_global *global)
 {
 	long long	time;
 	long long	i;
-
 	while (global->go && global->num_fed < global->num_philo)
 	{
-		i = -1;
-		while (global->go && global->num_times_feed && \
-		global->person[++i].counter_fed >= global->num_times_feed)
-			global->num_fed = i;
-		if (global->num_fed == global->num_philo)
-			global->go = 0;
-		i = -1;
 		time = current_time();
 		while (++i < global->num_philo && global->go)
 		{
@@ -102,5 +94,14 @@ void	ft_die_check(t_global *global)
 				global->person[i].id);
 			}
 		}
+		i = -1;
+		while (global->person[++i].counter_fed && global->go && \
+		global->num_times_feed && global->person[i].counter_fed >= global->num_times_feed)
+		{
+			global->num_fed = i;
+		}
+		if (global->num_fed == global->num_philo)
+			global->go = 0;
+		i = -1;
 	}
 }
