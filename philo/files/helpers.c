@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 23:08:57 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 23:16:05 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ void	ft_die_check(t_global *global)
 {
 	long long	time;
 	long long	i;
-	while (global->go && global->num_fed < global->num_philo)
+
+	while (global->num_fed < global->num_philo)
 	{
 		time = current_time();
 		while (++i < global->num_philo && global->go)
@@ -94,12 +95,12 @@ void	ft_die_check(t_global *global)
 				global->person[i].id);
 			}
 		}
+		if (!global->go)
+			break ;
 		i = -1;
 		while (global->person[++i].counter_fed && global->go && \
 		global->num_times_feed && global->person[i].counter_fed >= global->num_times_feed)
-		{
 			global->num_fed = i;
-		}
 		if (global->num_fed == global->num_philo)
 			global->go = 0;
 		i = -1;
