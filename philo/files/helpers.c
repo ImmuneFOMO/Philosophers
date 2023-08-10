@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 23:22:05 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 21:41:19 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,14 @@ void	ft_custom_sleep(long long time, t_global *global)
 
 void	ft_die_check(t_global *global)
 {
-	long long time;
-	long long i;
-	
+	long long	time;
+	long long	i;
+
 	while (global->go && global->num_fed < global->num_philo)
 	{
 		i = -1;
-		while (global->go && global->num_times_feed && global->person[++i].counter_fed >= global->num_times_feed)
+		while (global->go && global->num_times_feed && \
+		global->person[++i].counter_fed >= global->num_times_feed)
 			global->num_fed = i;
 		if (global->num_fed == global->num_philo)
 			global->go = 0;
@@ -92,11 +93,13 @@ void	ft_die_check(t_global *global)
 		time = current_time();
 		while (++i < global->num_philo && global->go)
 		{
-			if ((time - global->person[i].time_last_food) >= global->time_to_die)
+			if ((time - global->person[i].time_last_food) \
+			>= global->time_to_die)
 			{
 				global->go = 0;
 				pthread_mutex_lock(&global->printf);
-				printf("%lld %lld died\n", time - global->start_time, global->person[i].id);
+				printf("%lld %lld died\n", time - global->start_time, \
+				global->person[i].id);
 			}
 		}
 	}

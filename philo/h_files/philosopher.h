@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/09 22:49:48 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/10 21:39:28 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,7 @@ long long			current_time();
 void				ft_free_philo(t_global *global);
 void				ft_custom_sleep(long long time, t_global *global);
 void				ft_die_check(t_global *global);
+//output.c
+void				philo_print(t_person *philo, char *str);
 
 #endif
