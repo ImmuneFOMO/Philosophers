@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 23:16:05 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/11 17:21:42 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	ft_free_philo(t_global *global)
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
 	pthread_mutex_destroy(&global->printf);
+	pthread_mutex_destroy(&global->eating);
 	free(global->forks);
 	free(global->person);
 }
@@ -78,31 +79,32 @@ void	ft_custom_sleep(long long time, t_global *global)
 
 void	ft_die_check(t_global *global)
 {
-	long long	time;
 	long long	i;
+	long long	time;
 
-	while (global->num_fed < global->num_philo)
+	while (global->go)
 	{
-		time = current_time();
+		i = -1;
 		while (++i < global->num_philo && global->go)
 		{
-			if ((time - global->person[i].time_last_food) \
-			>= global->time_to_die)
+			time = current_time();
+			pthread_mutex_lock(&global->eating);
+			if ((time
+					- global->person[i].time_last_food) >= global->time_to_die)
 			{
-				global->go = 0;
 				pthread_mutex_lock(&global->printf);
-				printf("%lld %lld died\n", time - global->start_time, \
-				global->person[i].id);
+				printf("%lld %lld died\n", time, global->person[i].id);
+				global->go = 0;
 			}
+			pthread_mutex_unlock(&global->eating);
 		}
 		if (!global->go)
 			break ;
-		i = -1;
-		while (global->person[++i].counter_fed && global->go && \
-		global->num_times_feed && global->person[i].counter_fed >= global->num_times_feed)
-			global->num_fed = i;
-		if (global->num_fed == global->num_philo)
+		i = 0;
+		while (global->num_times_feed && i < global->num_philo
+			&& global->person[i].counter_fed >= global->num_fed)
+			i++;
+		if (i >= global->num_philo)
 			global->go = 0;
-		i = -1;
 	}
 }
