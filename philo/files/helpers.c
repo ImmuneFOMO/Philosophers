@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 17:21:42 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/11 18:40:34 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ void	ft_die_check(t_global *global)
 
 	while (global->go)
 	{
-		i = -1;
-		while (++i < global->num_philo && global->go)
+		i = 0;
+		while (i < global->num_philo && global->go)
 		{
 			time = current_time();
 			pthread_mutex_lock(&global->eating);
@@ -97,6 +97,7 @@ void	ft_die_check(t_global *global)
 				global->go = 0;
 			}
 			pthread_mutex_unlock(&global->eating);
+			i++;
 		}
 		if (!global->go)
 			break ;
