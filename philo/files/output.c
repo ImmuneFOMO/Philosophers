@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/10 21:36:14 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/11 22:23:16 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	philo_print(t_person *philo, char *str)
 {
-	long long	time;
+	unsigned long long	time;
 
 	time = current_time();
 	pthread_mutex_lock(&philo->global->printf);

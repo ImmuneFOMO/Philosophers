@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 18:40:34 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/11 22:19:12 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ long long	ft_atoi(const char *str)
 	return (num * s);
 }
 
-long long	current_time(void)
+unsigned long long	current_time(void)
 {
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL))
 		return (0);
-	return ((time.tv_usec / 1000) + (time.tv_sec * 1000));
+	return ((time.tv_usec / 1000) + (time.tv_sec * (unsigned long)1000));
 }
 
 void	ft_free_philo(t_global *global)
@@ -60,14 +60,13 @@ void	ft_free_philo(t_global *global)
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
 	pthread_mutex_destroy(&global->printf);
-	pthread_mutex_destroy(&global->eating);
 	free(global->forks);
 	free(global->person);
 }
 
-void	ft_custom_sleep(long long time, t_global *global)
+void	ft_custom_sleep(unsigned long long time, t_global *global)
 {
-	long long	st;
+	unsigned long long	st;
 
 	st = current_time();
 	while (global->go)
@@ -88,7 +87,6 @@ void	ft_die_check(t_global *global)
 		while (i < global->num_philo && global->go)
 		{
 			time = current_time();
-			pthread_mutex_lock(&global->eating);
 			if ((time
 					- global->person[i].time_last_food) >= global->time_to_die)
 			{
@@ -96,7 +94,6 @@ void	ft_die_check(t_global *global)
 				printf("%lld %lld died\n", time, global->person[i].id);
 				global->go = 0;
 			}
-			pthread_mutex_unlock(&global->eating);
 			i++;
 		}
 		if (!global->go)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 18:41:01 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/11 22:20:06 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,12 @@ typedef struct global
 	long long			num_philo;
 	long long			num_fed;
 	int					go;
-	
 	long long			time_to_die;
 	long long			time_to_eat;
 	long long			time_to_sleep;
 	long long			num_times_feed;
-	long long			start_time;
+	unsigned long long	start_time;
 	pthread_mutex_t		printf;
-	pthread_mutex_t		eating;
 	pthread_mutex_t		*forks;
 	t_person			*person;
 }						t_global;
@@ -57,9 +55,10 @@ int						ft_start_philo(t_global *global);
 //and main
 //helpers.c
 long long				ft_atoi(const char *str);
-long long				current_time(void);
+unsigned long long		current_time(void);
 void					ft_free_philo(t_global *global);
-void					ft_custom_sleep(long long time, t_global *global);
+void					ft_custom_sleep(unsigned long long \
+time, t_global *global);
 void					ft_die_check(t_global *global);
 //output.c
 void					philo_print(t_person *philo, char *str);
