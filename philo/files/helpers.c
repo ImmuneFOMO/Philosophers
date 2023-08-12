@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 22:19:12 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 20:18:36 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,26 @@ unsigned long long	current_time(void)
 
 void	ft_free_philo(t_global *global)
 {
-	int	i;
+	unsigned int	i;
 
-	i = -1;
+	i = 0;
 	if (global->num_philo > 1)
 	{
-		while (++i < global->num_philo)
+		while (i < global->num_philo)
+		{
 			pthread_join(global->person->th, 0);
+			i++;
+		}
 	}
 	else
 		pthread_detach(global->person[0].th);
-	i = -1;
-	while (++i < global->num_philo)
-		pthread_mutex_destroy(&global->forks[i]);
 	pthread_mutex_destroy(&global->printf);
+	i = 0;
+	while (i < global->num_philo)
+	{
+		pthread_mutex_destroy(&global->forks[i]);
+		i++;
+	}
 	free(global->forks);
 	free(global->person);
 }
@@ -78,20 +84,19 @@ void	ft_custom_sleep(unsigned long long time, t_global *global)
 
 void	ft_die_check(t_global *global)
 {
-	long long	i;
-	long long	time;
+	unsigned long long			i;
+	unsigned long long			time;
 
 	while (global->go)
 	{
-		i = 0;
+		i = -1;
 		while (i < global->num_philo && global->go)
 		{
 			time = current_time();
 			if ((time
 					- global->person[i].time_last_food) >= global->time_to_die)
 			{
-				pthread_mutex_lock(&global->printf);
-				printf("%lld %lld died\n", time, global->person[i].id);
+				philo_print(&global->person[i], "died", 0);
 				global->go = 0;
 			}
 			i++;

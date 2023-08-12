@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 22:08:20 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 20:05:07 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_isnums(char **str)
 {
-	int	i;
-	int	j;
+	unsigned int	i;
+	unsigned int	j;
 
 	i = 1;
 	while (str[i])
@@ -34,7 +34,7 @@ int	ft_isnums(char **str)
 
 int	ft_check_args(char **argv, t_global *global)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	if (ft_isnums(argv))
@@ -66,25 +66,37 @@ void	*start_life(void *arg)
 	while (philo->global->go)
 	{
 		pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
-		philo_print(philo, "has taken a fork");
+		if (philo->global->go == 0)
+			break ;
+		philo_print(philo, "has taken a fork", 1);
 		pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
-		philo_print(philo, "has taken a fork");
-		philo_print(philo, "is eating");
+		if (philo->global->go == 0)
+			break ;
+		philo_print(philo, "has taken a fork", 1);
+		if (philo->global->go == 0)
+			break ;
+		philo_print(philo, "is eating", 1);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
+		if (philo->global->go == 0)
+			break ;
 		philo->counter_fed++;
 		philo->time_last_food = current_time();
 		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
 		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
-		philo_print(philo, "is sleeping");
+		if (philo->global->go == 0)
+			break ;
+		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
-		philo_print(philo, "is thinking");
+		if (philo->global->go == 0)
+			break ;
+		philo_print(philo, "is thinking", 1);
 	}
 	return (NULL);
 }
 
 int	ft_start_philo(t_global *global)
 {
-	long long	i;
+	unsigned long long	i;
 
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
@@ -111,8 +123,7 @@ int	ft_start_philo(t_global *global)
 		global->person[i].id = i + 1;
 		global->person[i].global = global;
 		global->person[i].counter_fed = 0;
-		if (global->num_philo > 1)
-			global->start_time = current_time();
+		global->start_time = current_time();
 		global->person[i].time_last_food = current_time();
 		if (pthread_create(&global->person[i].th, NULL, &start_life,
 				&global->person[i]))

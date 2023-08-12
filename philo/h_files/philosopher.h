@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/11 22:20:06 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 20:01:53 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,28 @@ typedef struct global	t_global;
 
 typedef struct person
 {
-	long long			left_hand;
-	long long			right_hand;
-	long long			id;
+	unsigned long long	left_hand;
+	unsigned long long	right_hand;
+	unsigned long long	id;
 	long long			time_last_food;
-	long long			counter_fed;
+	unsigned long long	counter_fed;
 	pthread_t			th;
 	t_global			*global;
 }						t_person;
 
 typedef struct global
 {
-	long long			num_philo;
-	long long			num_fed;
-	int					go;
-	long long			time_to_die;
-	long long			time_to_eat;
-	long long			time_to_sleep;
-	long long			num_times_feed;
-	unsigned long long	start_time;
-	pthread_mutex_t		printf;
-	pthread_mutex_t		*forks;
-	t_person			*person;
+	unsigned long long			num_philo;
+	unsigned long long			num_fed;
+	int							go;
+	unsigned long long			time_to_die;
+	unsigned long long			time_to_eat;
+	unsigned long long			time_to_sleep;
+	unsigned long long			num_times_feed;
+	unsigned long long			start_time;
+	pthread_mutex_t				printf;
+	pthread_mutex_t				*forks;
+	t_person					*person;
 }						t_global;
 
 //philosopher.c
@@ -61,6 +61,6 @@ void					ft_custom_sleep(unsigned long long \
 time, t_global *global);
 void					ft_die_check(t_global *global);
 //output.c
-void					philo_print(t_person *philo, char *str);
+void					philo_print(t_person *philo, char *str, int flag);
 
 #endif
