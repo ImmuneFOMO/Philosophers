@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/12 20:01:53 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 21:00:49 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,29 @@ typedef struct global	t_global;
 
 typedef struct person
 {
-	unsigned long long	left_hand;
-	unsigned long long	right_hand;
-	unsigned long long	id;
+	long long			left_hand;
+	long long			right_hand;
+	long long			id;
 	long long			time_last_food;
-	unsigned long long	counter_fed;
+	long long			counter_fed;
 	pthread_t			th;
 	t_global			*global;
 }						t_person;
 
 typedef struct global
 {
-	unsigned long long			num_philo;
-	unsigned long long			num_fed;
-	int							go;
-	unsigned long long			time_to_die;
-	unsigned long long			time_to_eat;
-	unsigned long long			time_to_sleep;
-	unsigned long long			num_times_feed;
-	unsigned long long			start_time;
-	pthread_mutex_t				printf;
-	pthread_mutex_t				*forks;
-	t_person					*person;
+	long long			num_philo;
+	long long			num_fed;
+	int					go;
+	long long			time_to_die;
+	long long			time_to_eat;
+	long long			time_to_sleep;
+	long long			num_times_feed;
+	unsigned long long	start_time;
+	pthread_mutex_t		printf;
+	pthread_mutex_t		lock;
+	pthread_mutex_t		*forks;
+	t_person			*person;
 }						t_global;
 
 //philosopher.c

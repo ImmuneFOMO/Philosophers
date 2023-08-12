@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/12 20:18:36 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 21:43:31 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,26 +46,20 @@ unsigned long long	current_time(void)
 
 void	ft_free_philo(t_global *global)
 {
-	unsigned int	i;
+	int	i;
 
-	i = 0;
+	i = -1;
 	if (global->num_philo > 1)
 	{
-		while (i < global->num_philo)
-		{
+		while (++i < global->num_philo)
 			pthread_join(global->person->th, 0);
-			i++;
-		}
 	}
 	else
 		pthread_detach(global->person[0].th);
-	pthread_mutex_destroy(&global->printf);
-	i = 0;
-	while (i < global->num_philo)
-	{
+	i = -1;
+	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
-		i++;
-	}
+	pthread_mutex_destroy(&global->printf);
 	free(global->forks);
 	free(global->person);
 }
@@ -84,12 +78,12 @@ void	ft_custom_sleep(unsigned long long time, t_global *global)
 
 void	ft_die_check(t_global *global)
 {
-	unsigned long long			i;
-	unsigned long long			time;
+	long long	i;
+	long long	time;
 
 	while (global->go)
 	{
-		i = -1;
+		i = 0;
 		while (i < global->num_philo && global->go)
 		{
 			time = current_time();
