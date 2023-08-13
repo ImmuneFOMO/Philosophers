@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/12 21:00:49 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/12 23:24:42 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct global
 	long long			num_times_feed;
 	unsigned long long	start_time;
 	pthread_mutex_t		printf;
-	pthread_mutex_t		lock;
+	pthread_mutex_t		checker;
 	pthread_mutex_t		*forks;
 	t_person			*person;
 }						t_global;

@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/12 21:45:32 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/13 23:48:02 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,12 @@ void	*start_life(void *arg)
 		philo_print(philo, "has taken a fork", 1);
 		pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
 		philo_print(philo, "has taken a fork", 1);
+		pthread_mutex_lock(&philo->global->checker);
 		philo_print(philo, "is eating", 1);
+		philo->time_last_food = current_time();
+		pthread_mutex_unlock(&philo->global->checker);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
 		philo->counter_fed++;
-		philo->time_last_food = current_time();
 		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
 		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
 		philo_print(philo, "is sleeping", 1);
@@ -98,6 +100,7 @@ int	ft_start_philo(t_global *global)
 	}
 	i = 0;
 	pthread_mutex_init(&global->printf, NULL);
+	pthread_mutex_init(&global->checker, NULL);
 	while (i < global->num_philo)
 	{
 		if (pthread_mutex_init(&global->forks[i], NULL))

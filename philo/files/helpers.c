@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/12 21:43:31 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/13 23:44:29 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	ft_free_philo(t_global *global)
 	i = -1;
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
+	pthread_mutex_destroy(&global->checker);
 	pthread_mutex_destroy(&global->printf);
 	free(global->forks);
 	free(global->person);
@@ -86,6 +87,7 @@ void	ft_die_check(t_global *global)
 		i = 0;
 		while (i < global->num_philo && global->go)
 		{
+			pthread_mutex_lock(&global->checker);
 			time = current_time();
 			if ((time
 					- global->person[i].time_last_food) >= global->time_to_die)
@@ -94,6 +96,7 @@ void	ft_die_check(t_global *global)
 				global->go = 0;
 			}
 			i++;
+			pthread_mutex_unlock(&global->checker);
 		}
 		if (!global->go)
 			break ;
