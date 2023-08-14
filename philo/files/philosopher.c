@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/14 17:44:04 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/14 18:39:47 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ void	*start_life(void *arg)
 		philo_print(philo, "has taken a fork", 1);
 		pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
 		philo_print(philo, "has taken a fork", 1);
+		if (philo->counter_fed == philo->global->num_times_feed)
+			break ;
 		pthread_mutex_lock(&philo->global->checker);
 		philo_print(philo, "is eating", 1);
 		philo->time_last_food = current_time();

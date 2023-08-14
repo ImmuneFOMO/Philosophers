@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/14 16:50:50 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/14 18:31:39 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,15 @@ void	ft_die_check(t_global *global)
 	while (global->go)
 	{
 		i = 0;
+		pthread_mutex_lock(&global->checker);
 		while (global->num_times_feed && i < global->num_philo
 			&& global->person[i].counter_fed >= global->num_times_feed)
 			i++;
-		if (i >= global->num_philo)
+		if (i == global->num_philo)
 			global->go = 0;
+		pthread_mutex_unlock(&global->checker);
 		if (global->go == 0)
 			break ;
-		i = 0;
 		while (i < global->num_philo && global->go)
 		{
 			pthread_mutex_lock(&global->checker);
