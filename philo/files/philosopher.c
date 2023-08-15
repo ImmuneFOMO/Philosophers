@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/15 17:09:33 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 17:58:56 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,17 @@ void	*start_life(void *arg)
 		ft_custom_sleep(10, philo->global);
 	while (get_global(philo->global))
 	{
-		pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
-		philo_print(philo, "has taken a fork", 1);
 		pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
 		philo_print(philo, "has taken a fork", 1);
+		printf("%lld philo took %lld\n", philo->id, philo->right_hand);
+		pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
+		philo_print(philo, "has taken a fork", 1);
+		printf("%lld philo took %lld\n", philo->id, philo->left_hand);
 		if (philo->global->num_times_feed > 0 && \
 		philo->counter_fed == philo->global->num_times_feed)
 		{
-			pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
 			pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
+			pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
 			break ;
 		}
 		pthread_mutex_lock(&philo->global->checker);
@@ -84,8 +86,10 @@ void	*start_life(void *arg)
 		pthread_mutex_lock(&philo->global->checker);
 		philo->counter_fed++;
 		pthread_mutex_unlock(&philo->global->checker);
-		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
 		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
+		printf("%lld philo put %lld\n", philo->id, philo->left_hand);
+		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
+		printf("%lld philo put %lld\n", philo->id, philo->right_hand);
 		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
