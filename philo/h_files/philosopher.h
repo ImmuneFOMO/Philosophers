@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/15 16:45:48 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 17:03:15 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct global
 	long long			num_philo;
 	long long			num_fed;
 	int					go;
+	int					locked;
 	long long			time_to_die;
 	long long			time_to_eat;
 	long long			time_to_sleep;

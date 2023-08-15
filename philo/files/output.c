@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/15 16:56:34 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 17:04:45 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	philo_print(t_person *philo, char *str, int flag)
 	printf("%05lld %lld %s\n", time - philo->global->start_time, philo->id, str);
 	if (flag)
 		pthread_mutex_unlock(&philo->global->printf);
+	else
+		philo->global->locked = 1;
 }
 
 int	get_global(t_global *global)

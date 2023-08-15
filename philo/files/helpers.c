@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/15 16:59:16 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 17:05:13 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ void	ft_free_philo(t_global *global)
 	i = -1;
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
-	pthread_mutex_unlock(&global->printf);
+	if (global->locked)
+		pthread_mutex_unlock(&global->printf);
 	pthread_mutex_destroy(&global->checker);
 	pthread_mutex_destroy(&global->printf);
 	pthread_mutex_destroy(&global->eating);
