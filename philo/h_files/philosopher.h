@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/14 18:30:56 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 16:45:48 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct global
 	unsigned long long	start_time;
 	pthread_mutex_t		printf;
 	pthread_mutex_t		checker;
+	pthread_mutex_t		eating;
 	pthread_mutex_t		*forks;
 	t_person			*person;
 }						t_global;
@@ -63,5 +64,6 @@ time, t_global *global);
 void					ft_die_check(t_global *global);
 //output.c
 void					philo_print(t_person *philo, char *str, int flag);
+int						get_global(t_global *global);
 
 #endif

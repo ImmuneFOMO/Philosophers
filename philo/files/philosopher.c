@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/14 20:02:23 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/15 16:55:11 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	*start_life(void *arg)
 	philo = (t_person *)arg;
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(10, philo->global);
-	while (philo->global->go)
+	while (get_global(philo->global))
 	{
 		pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
 		philo_print(philo, "has taken a fork", 1);
@@ -120,6 +120,7 @@ int	ft_start_philo(t_global *global)
 	}
 	pthread_mutex_init(&global->printf, NULL);
 	pthread_mutex_init(&global->checker, NULL);
+	pthread_mutex_init(&global->eating, NULL);
 	global->start_time = current_time();
 	i = 0;
 	while (i < global->num_philo)
