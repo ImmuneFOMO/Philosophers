@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/17 14:56:26 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/17 17:56:31 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,13 @@ void	*start_life(void *arg)
 	t_person	*philo;
 
 	philo = (t_person *)arg;
+	if (philo->global->num_philo == 1)
+	{
+		philo_print(philo, "has taken a fork", 1);
+		return (NULL);
+	}
 	if (philo->global->num_philo > 1 && philo->id % 2)
-		ft_custom_sleep(10, philo->global);
+		ft_custom_sleep(50, philo->global);
 	while (get_global(philo->global))
 	{
 		if (philo->right_hand < philo->left_hand)
