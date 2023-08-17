@@ -3,7 +3,7 @@ NAME := philo
 FILES := files/philosopher.c files/helpers.c files/output.c
 OFILES := $(FILES:.c=.o)
 
-CFLAGS := -Wall -Wextra -Werror -pthread -g -fsanitize=thread 
+CFLAGS := -Wall -Wextra -Werror -pthread -g -fsanitize=thread
 CC := cc
 
 all: $(NAME)
