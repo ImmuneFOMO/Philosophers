@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/17 17:53:02 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/18 14:21:52 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ long long	ft_atoi(const char *str)
 	return (num * s);
 }
 
-unsigned long long	current_time(void)
+long long	current_time(void)
 {
 	struct timeval	time;
 
@@ -68,15 +68,15 @@ void	ft_free_philo(t_global *global)
 	free(global->person);
 }
 
-void	ft_custom_sleep(unsigned long long time, t_global *global)
+void	ft_custom_sleep(long long time, t_global *global)
 {
-	unsigned long long	st;
+	long long	st;
 
+	(void)global;
 	st = current_time();
-	while (get_global(global))
+	while ((current_time() - st) < time)
 	{
-		if ((current_time() - st) >= time)
-			break ;
+		usleep(time / 10);
 	}
 }
 
