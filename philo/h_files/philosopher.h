@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 13:28:48 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/18 16:23:32 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ time, t_global *global);
 void					ft_die_check(t_global *global);
 //output.c
 void					philo_print(t_person *philo, char *str, int flag);
-int						get_global(t_global *global);
+int						get_go(t_global *global);
+void					eating(t_person *philo);
+void					helper_die_check(t_global *global);
+int						hepler_start_philo(t_global *global);
 
 #endif

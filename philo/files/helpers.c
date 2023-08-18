@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 14:21:52 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/18 16:00:06 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,8 @@ void	ft_custom_sleep(long long time, t_global *global)
 void	ft_die_check(t_global *global)
 {
 	long long	i;
-	long long	time;
 
-	while (get_global(global))
+	while (get_go(global))
 	{
 		i = 0;
 		pthread_mutex_lock(&global->checker);
@@ -97,23 +96,8 @@ void	ft_die_check(t_global *global)
 			global->go = 0;
 		pthread_mutex_unlock(&global->eating);
 		pthread_mutex_unlock(&global->checker);
-		if (get_global(global) == 0)
+		if (get_go(global) == 0)
 			break ;
-		i = 0;
-		while (i < global->num_philo && get_global(global))
-		{
-			pthread_mutex_lock(&global->checker);
-			time = current_time();
-			if ((time
-					- global->person[i].time_last_food) >= global->time_to_die)
-			{
-				philo_print(&global->person[i], "died", 0);
-				pthread_mutex_lock(&global->eating);
-				global->go = 0;
-				pthread_mutex_unlock(&global->eating);
-			}
-			i++;
-			pthread_mutex_unlock(&global->checker);
-		}
+		helper_die_check(global);
 	}
 }

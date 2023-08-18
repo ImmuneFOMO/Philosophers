@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 14:22:58 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/18 16:24:30 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,9 @@ void	*start_life(void *arg)
 	}
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
-	while (get_global(philo->global))
+	while (get_go(philo->global))
 	{
-		pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
-		philo_print(philo, "has taken a fork", 1);
-		pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
-		philo_print(philo, "has taken a fork", 1);
-		pthread_mutex_lock(&philo->global->checker);
-		philo_print(philo, "is eating", 1);
-		philo->time_last_food = current_time();
-		pthread_mutex_unlock(&philo->global->checker);
+		eating(philo);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
 		pthread_mutex_lock(&philo->global->checker);
 		philo->counter_fed++;
@@ -105,8 +98,8 @@ int	ft_start_philo(t_global *global)
 		free(global->person);
 		return (1);
 	}
-	i = 0;
-	while (i < global->num_philo)
+	i = -1;
+	while (++i < global->num_philo)
 	{
 		if (pthread_mutex_init(&global->forks[i], NULL))
 		{
@@ -114,27 +107,9 @@ int	ft_start_philo(t_global *global)
 			free(global->forks);
 			return (1);
 		}
-		i++;
 	}
-	pthread_mutex_init(&global->printf, NULL);
-	pthread_mutex_init(&global->checker, NULL);
-	pthread_mutex_init(&global->eating, NULL);
-	global->start_time = current_time();
-	global->locked = 0;
-	i = 0;
-	while (i < global->num_philo)
-	{
-		global->person[i].left_hand = i;
-		global->person[i].right_hand = (i + 1) % global->num_philo;
-		global->person[i].id = i + 1;
-		global->person[i].global = global;
-		global->person[i].counter_fed = 0;
-		global->person[i].time_last_food = current_time();
-		if (pthread_create(&global->person[i].th, NULL, &start_life,
-				&global->person[i]))
-			return (0);
-		i++;
-	}
+	if (hepler_start_philo(global))
+		return (1);
 	return (0);
 }
 
