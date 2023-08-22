@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   output.c                                           :+:      :+:    :+:   */
+/*   output_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 16:24:41 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/22 17:40:33 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../h_files/philosopher.h"
+#include "../h_files/philosopher_bonus.h"
 
 void	philo_print(t_person *philo, char *str, int flag)
 {
@@ -77,6 +77,7 @@ void	helper_die_check(t_global *global)
 int	hepler_start_philo(t_global *global)
 {
 	long long	i;
+	pid_t		pid;
 
 	pthread_mutex_init(&global->printf, NULL);
 	pthread_mutex_init(&global->checker, NULL);
@@ -92,9 +93,18 @@ int	hepler_start_philo(t_global *global)
 		global->person[i].global = global;
 		global->person[i].counter_fed = 0;
 		global->person[i].time_last_food = current_time();
-		if (pthread_create(&global->person[i].th, NULL, &start_life,
-				&global->person[i]))
+		global->pids[i] = fork();
+		if (global->pids[i] < 0)
+		{
+			while (--i >= 0)
+				kill(global->pids[i], SIGKILL);
 			return (1);
+		}
+		else if (global->pids[i] == 0)
+		{
+			start_life(global);
+			exit(0);
+		}
 		i++;
 	}
 	return (0);

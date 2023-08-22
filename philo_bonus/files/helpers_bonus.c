@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helpers.c                                          :+:      :+:    :+:   */
+/*   helpers_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 16:00:06 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/22 16:33:58 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../h_files/philosopher.h"
+#include "../h_files/philosopher_bonus.h"
 
 long long	ft_atoi(const char *str)
 {
@@ -49,13 +49,13 @@ void	ft_free_philo(t_global *global)
 	int	i;
 
 	i = -1;
-	if (global->num_philo > 1)
+	printf("clean start\n");
+	if (global->num_philo >= 1)
 	{
 		while (++i < global->num_philo)
-			pthread_join(global->person[i].th, 0);
+			waitpid(-1, NULL, 0);
 	}
-	else
-		pthread_detach(global->person[0].th);
+	printf("clean end\n");
 	i = -1;
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);
