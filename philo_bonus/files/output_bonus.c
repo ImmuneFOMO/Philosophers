@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   output_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 17:40:33 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/22 20:06:41 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	philo_print(t_person *philo, char *str, int flag)
 		return ;
 	pthread_mutex_lock(&philo->global->printf);
 	time = current_time();
-	printf("%05lld %lld %s\n", time - philo->global->start_time, philo->id, str);
+	printf("%05lld %lld %s\n", time - philo->global->start_time, philo->id,
+			str);
 	if (flag)
 		pthread_mutex_unlock(&philo->global->printf);
 	else
@@ -61,8 +62,7 @@ void	helper_die_check(t_global *global)
 	{
 		pthread_mutex_lock(&global->checker);
 		time = current_time();
-		if ((time \
-		- global->person[i].time_last_food) >= global->time_to_die)
+		if ((time - global->person[i].time_last_food) >= global->time_to_die)
 		{
 			philo_print(&global->person[i], "died", 0);
 			pthread_mutex_lock(&global->eating);
@@ -77,7 +77,6 @@ void	helper_die_check(t_global *global)
 int	hepler_start_philo(t_global *global)
 {
 	long long	i;
-	pid_t		pid;
 
 	pthread_mutex_init(&global->printf, NULL);
 	pthread_mutex_init(&global->checker, NULL);
@@ -93,18 +92,9 @@ int	hepler_start_philo(t_global *global)
 		global->person[i].global = global;
 		global->person[i].counter_fed = 0;
 		global->person[i].time_last_food = current_time();
-		global->pids[i] = fork();
-		if (global->pids[i] < 0)
-		{
-			while (--i >= 0)
-				kill(global->pids[i], SIGKILL);
+		if (pthread_create(&global->person[i].th, NULL, &start_life,
+				&global->person[i]))
 			return (1);
-		}
-		else if (global->pids[i] == 0)
-		{
-			start_life(global);
-			exit(0);
-		}
 		i++;
 	}
 	return (0);

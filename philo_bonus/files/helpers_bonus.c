@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 16:33:58 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/22 20:06:44 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ void	ft_free_philo(t_global *global)
 	int	i;
 
 	i = -1;
-	printf("clean start\n");
-	if (global->num_philo >= 1)
+	if (global->num_philo > 1)
 	{
 		while (++i < global->num_philo)
-			waitpid(-1, NULL, 0);
+			pthread_join(global->person[i].th, 0);
 	}
-	printf("clean end\n");
+	else
+		pthread_detach(global->person[0].th);
 	i = -1;
 	while (++i < global->num_philo)
 		pthread_mutex_destroy(&global->forks[i]);

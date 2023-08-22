@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 17:50:30 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/22 20:06:39 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ int	ft_check_args(char **argv, t_global *global)
 	return (0);
 }
 
-void	start_life(void *arg)
+void	*start_life(void *arg)
 {
-	t_global	*philo;
+	t_person	*philo;
 
-	philo = (t_global *)arg;
-	if (philo->num_philo == 1)
+	philo = (t_person *)arg;
+	if (philo->global->num_philo == 1)
 	{
 		philo_print(philo, "has taken a fork", 1);
-		return ;
+		return (NULL);
 	}
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
@@ -81,6 +81,7 @@ void	start_life(void *arg)
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
 	}
+	return (NULL);
 }
 
 int	ft_start_philo(t_global *global)
@@ -90,19 +91,11 @@ int	ft_start_philo(t_global *global)
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
 		return (1);
-	global->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) \
-	* global->num_philo);
-	global->pids = malloc(sizeof(t_pid) * global->num_philo);
+	global->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* global->num_philo);
 	if (!global->forks)
 	{
 		free(global->person);
-		return (1);
-	}
-	global->pids = malloc(sizeof(t_pid) * global->num_philo);
-	if (!global->pids)
-	{
-		free(global->person);
-		free(global->forks);
 		return (1);
 	}
 	i = -1;
@@ -115,7 +108,6 @@ int	ft_start_philo(t_global *global)
 			return (1);
 		}
 	}
-	memset(global->pids, 0, sizeof(t_pid) * global->num_philo);
 	if (hepler_start_philo(global))
 		return (1);
 	return (0);
