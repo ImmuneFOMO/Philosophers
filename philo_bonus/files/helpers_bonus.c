@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 20:06:44 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 00:40:59 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,17 @@ void	ft_free_philo(t_global *global)
 	if (global->num_philo > 1)
 	{
 		while (++i < global->num_philo)
-			pthread_join(global->person[i].th, 0);
+			waitpid(global->person[i].pid, 0, 0);
 	}
 	else
-		pthread_detach(global->person[0].th);
-	i = -1;
-	while (++i < global->num_philo)
-		pthread_mutex_destroy(&global->forks[i]);
-	if (global->locked)
-		pthread_mutex_unlock(&global->printf);
-	pthread_mutex_destroy(&global->checker);
-	pthread_mutex_destroy(&global->printf);
-	pthread_mutex_destroy(&global->eating);
-	free(global->forks);
+	{
+		kill(global->person[0].pid, SIGKILL);
+	}
+	sem_close(&global->forks);
+	sem_unlink("/forks");
+	sem_close(&global->checker);
+	sem_close(&global->printf);
+	sem_close(&global->eating);
 	free(global->person);
 }
 
@@ -87,15 +85,15 @@ void	ft_die_check(t_global *global)
 	while (get_go(global))
 	{
 		i = 0;
-		pthread_mutex_lock(&global->checker);
+		sem_wait(&global->checker);
 		while (global->num_times_feed && i < global->num_philo
 			&& global->person[i].counter_fed >= global->num_times_feed)
 			i++;
-		pthread_mutex_lock(&global->eating);
+		sem_wait(&global->eating);
 		if (i >= global->num_philo)
 			global->go = 0;
-		pthread_mutex_unlock(&global->eating);
-		pthread_mutex_unlock(&global->checker);
+		sem_post(&global->eating);
+		sem_post(&global->checker);
 		if (get_go(global) == 0)
 			break ;
 		helper_die_check(global);

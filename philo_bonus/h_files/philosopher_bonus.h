@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosopher.h                                      :+:      :+:    :+:   */
+/*   philosopher_bonus.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 16:23:32 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 01:15:33 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHER_H
-# define PHILOSOPHER_H
-# include <pthread.h>
+#ifndef PHILOSOPHER_BONUS_H
+# define PHILOSOPHER_BONUS_H
+# include <semaphore.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -28,7 +29,7 @@ typedef struct person
 	long long			id;
 	long long			time_last_food;
 	long long			counter_fed;
-	pthread_t			th;
+	pid_t				pid;
 	t_global			*global;
 }						t_person;
 
@@ -43,25 +44,26 @@ typedef struct global
 	long long			time_to_sleep;
 	long long			num_times_feed;
 	unsigned long long	start_time;
-	pthread_mutex_t		printf;
-	pthread_mutex_t		checker;
-	pthread_mutex_t		eating;
-	pthread_mutex_t		*forks;
+	sem_t				printf;
+	sem_t				checker;
+	sem_t				eating;
+	sem_t				forks;
 	t_person			*person;
 }						t_global;
 
 //philosopher.c
 int						ft_check_args(char **argv, t_global *philos);
 int						ft_isnums(char **str);
-void					*start_life(void *arg);
+void					*start_life(t_person *philo);
 int						ft_start_philo(t_global *global);
 //and main
 //helpers.c
 long long				ft_atoi(const char *str);
 long long				current_time(void);
 void					ft_free_philo(t_global *global);
-void					ft_custom_sleep(long long \
-time, t_global *global);
+void	ft_custom_sleep(long long
+							time,
+						t_global *global);
 void					ft_die_check(t_global *global);
 //output.c
 void					philo_print(t_person *philo, char *str, int flag);

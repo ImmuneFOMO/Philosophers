@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 20:06:39 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 00:28:21 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,8 @@ int	ft_check_args(char **argv, t_global *global)
 	return (0);
 }
 
-void	*start_life(void *arg)
+void	*start_life(t_person *philo)
 {
-	t_person	*philo;
-
-	philo = (t_person *)arg;
 	if (philo->global->num_philo == 1)
 	{
 		philo_print(philo, "has taken a fork", 1);
@@ -72,11 +69,11 @@ void	*start_life(void *arg)
 	{
 		eating(philo);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
-		pthread_mutex_lock(&philo->global->checker);
+		sem_wait(&philo->global->checker);
 		philo->counter_fed++;
-		pthread_mutex_unlock(&philo->global->checker);
-		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
-		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
+		sem_post(&philo->global->checker);
+		sem_post(&philo->global->forks);
+		sem_post(&philo->global->forks);
 		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
@@ -86,27 +83,13 @@ void	*start_life(void *arg)
 
 int	ft_start_philo(t_global *global)
 {
-	long long	i;
-
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
 		return (1);
-	global->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
-			* global->num_philo);
-	if (!global->forks)
+	if (sem_init(&global->forks, 0, global->num_philo))
 	{
 		free(global->person);
 		return (1);
-	}
-	i = -1;
-	while (++i < global->num_philo)
-	{
-		if (pthread_mutex_init(&global->forks[i], NULL))
-		{
-			free(global->person);
-			free(global->forks);
-			return (1);
-		}
 	}
 	if (hepler_start_philo(global))
 		return (1);

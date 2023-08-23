@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   output_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/22 20:06:41 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 00:46:12 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ void	philo_print(t_person *philo, char *str, int flag)
 
 	if (!get_go(philo->global))
 		return ;
-	pthread_mutex_lock(&philo->global->printf);
+	sem_wait(&philo->global->printf);
 	time = current_time();
 	printf("%05lld %lld %s\n", time - philo->global->start_time, philo->id,
 			str);
 	if (flag)
-		pthread_mutex_unlock(&philo->global->printf);
+		sem_post(&philo->global->printf);
 	else
 		philo->global->locked = 1;
 }
@@ -32,24 +32,25 @@ int	get_go(t_global *global)
 {
 	int	i;
 
-	i = 1;
-	pthread_mutex_lock(&global->eating);
+	sem_wait(&global->eating);
 	if (global->go == 0)
 		i = 0;
-	pthread_mutex_unlock(&global->eating);
+	else
+		i = 1;
+	sem_post(&global->eating);
 	return (i);
 }
 
 void	eating(t_person *philo)
 {
-	pthread_mutex_lock(&philo->global->forks[philo->right_hand]);
+	sem_wait(&philo->global->forks);
 	philo_print(philo, "has taken a fork", 1);
-	pthread_mutex_lock(&philo->global->forks[philo->left_hand]);
+	sem_wait(&philo->global->forks);
 	philo_print(philo, "has taken a fork", 1);
-	pthread_mutex_lock(&philo->global->checker);
+	sem_wait(&philo->global->checker);
 	philo_print(philo, "is eating", 1);
 	philo->time_last_food = current_time();
-	pthread_mutex_unlock(&philo->global->checker);
+	sem_post(&philo->global->checker);
 }
 
 void	helper_die_check(t_global *global)
@@ -60,27 +61,31 @@ void	helper_die_check(t_global *global)
 	i = 0;
 	while (i < global->num_philo && get_go(global))
 	{
-		pthread_mutex_lock(&global->checker);
+		sem_wait(&global->checker);
 		time = current_time();
 		if ((time - global->person[i].time_last_food) >= global->time_to_die)
 		{
 			philo_print(&global->person[i], "died", 0);
-			pthread_mutex_lock(&global->eating);
+			sem_wait(&global->eating);
 			global->go = 0;
-			pthread_mutex_unlock(&global->eating);
+			sem_post(&global->eating);
 		}
 		i++;
-		pthread_mutex_unlock(&global->checker);
+		sem_post(&global->checker);
 	}
 }
 
 int	hepler_start_philo(t_global *global)
 {
 	long long	i;
+	pid_t		pid;
 
-	pthread_mutex_init(&global->printf, NULL);
-	pthread_mutex_init(&global->checker, NULL);
-	pthread_mutex_init(&global->eating, NULL);
+	if (sem_init(&global->checker, 0, 1))
+		return (1);
+	if (sem_init(&global->eating, 0, 1))
+		return (1);
+	if (sem_init(&global->printf, 0, 1))
+		return (1);
 	global->start_time = current_time();
 	global->locked = 0;
 	i = 0;
@@ -92,9 +97,16 @@ int	hepler_start_philo(t_global *global)
 		global->person[i].global = global;
 		global->person[i].counter_fed = 0;
 		global->person[i].time_last_food = current_time();
-		if (pthread_create(&global->person[i].th, NULL, &start_life,
-				&global->person[i]))
+		pid = fork();
+		if (pid < 0)
 			return (1);
+		else if (pid == 0)
+		{
+			start_life(&global->person[i]);
+			exit(0);
+		}
+		else
+			global->person[i].pid = pid;
 		i++;
 	}
 	return (0);
