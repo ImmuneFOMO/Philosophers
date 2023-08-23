@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/23 00:28:21 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 16:40:45 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,22 +58,21 @@ int	ft_check_args(char **argv, t_global *global)
 
 void	*start_life(t_person *philo)
 {
-	if (philo->global->num_philo == 1)
-	{
-		philo_print(philo, "has taken a fork", 1);
-		return (NULL);
-	}
+	if (pthread_create(&philo->checker, NULL, &ft_die_check, &philo))
+		exit(1);
+	if (pthread_detach(philo->checker))
+		exit(1);
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
-	while (get_go(philo->global))
+	while (1)
 	{
 		eating(philo);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
-		sem_wait(&philo->global->checker);
 		philo->counter_fed++;
-		sem_post(&philo->global->checker);
 		sem_post(&philo->global->forks);
 		sem_post(&philo->global->forks);
+		if (philo->counter_fed == philo->global->num_fed)
+			exit(0);
 		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
@@ -106,7 +105,6 @@ int	main(int argc, char **argv)
 			return (-1);
 		if (ft_start_philo(&global))
 			return (-1);
-		ft_die_check(&global);
 		ft_free_philo(&global);
 	}
 	return (0);

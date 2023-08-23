@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 16:24:41 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/23 16:52:56 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,16 @@ int	hepler_start_philo(t_global *global)
 	i = 0;
 	while (i < global->num_philo)
 	{
-		global->person[i].left_hand = i;
-		global->person[i].right_hand = (i + 1) % global->num_philo;
+		if (i % 2 == 0)
+		{
+			global->person[i].left_hand = i;
+			global->person[i].right_hand = (i + 1) % global->num_philo;
+		}
+		else
+		{
+			global->person[i].left_hand = (i + 1) % global->num_philo;
+			global->person[i].right_hand = i;
+		}
 		global->person[i].id = i + 1;
 		global->person[i].global = global;
 		global->person[i].counter_fed = 0;
