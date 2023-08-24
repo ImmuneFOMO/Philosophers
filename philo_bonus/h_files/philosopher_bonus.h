@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_bonus.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 16:30:53 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/24 20:36:26 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct global
 	sem_t				*checker;
 	sem_t				*eating;
 	sem_t				*forks;
-	t_person			*person;
+	t_person			**person;
 }						t_global;
 
 // philosopher_bonus.c

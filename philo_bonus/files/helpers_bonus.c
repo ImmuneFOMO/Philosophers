@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 16:31:37 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/24 18:20:27 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,12 @@ void	*ft_die_check(void *person)
 	time_t		time;
 
 	philo = (t_person *)person;
+	printf("time start die check:%ld\n", philo->time_last_food);
 	while (1)
 	{
 		sem_wait(philo->global->checker);
 		time = current_time();
-		// printf("Current: %ld, current_time:%ld, start:%ld, dif:%ld,
-		// time_to_die:%ld\n",time, current_time(), philo->time_last_food, time
-		//	- philo->time_last_food,philo->global->time_to_die);
+		 //printf("Current: %ld, current_time:%ld, time_last_food:%ld, dif:%ld, time_to_die:%ld\n", \time, current_time(),\philo->time_last_food, time - philo->time_last_food, philo->global->time_to_die);
 		if ((time - philo->time_last_food) >= philo->global->time_to_die)
 		{
 			philo_print(philo, "died", 0);
