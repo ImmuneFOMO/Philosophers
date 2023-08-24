@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/23 18:32:00 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/24 16:30:02 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,8 @@ int	ft_check_args(char **argv, t_global *global)
 	return (0);
 }
 
-void	*start_life(t_person *philo)
+void	start_life(t_person *philo)
 {
-	printf("start life:%ld\n", philo->time_last_food);
 	if (pthread_create(&philo->checker, NULL, &ft_die_check, &philo))
 		exit(1);
 	if (pthread_detach(philo->checker))
@@ -70,15 +69,14 @@ void	*start_life(t_person *philo)
 		eating(philo);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
 		philo->counter_fed++;
-		sem_post(&philo->global->forks);
-		sem_post(&philo->global->forks);
+		sem_post(philo->global->forks);
+		sem_post(philo->global->forks);
 		if (philo->counter_fed == philo->global->num_fed)
 			exit(0);
 		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
 	}
-	return (NULL);
 }
 
 int	ft_start_philo(t_global *global)
@@ -86,7 +84,16 @@ int	ft_start_philo(t_global *global)
 	global->person = (t_person *)malloc(sizeof(t_person) * global->num_philo);
 	if (!global->person)
 		return (1);
-	if (sem_init(&global->forks, 0, global->num_philo))
+	sem_unlink("/printf");
+	sem_unlink("/checker");
+	sem_unlink("/eating");
+	sem_unlink("/forks");
+	global->forks = sem_open("/forks", O_CREAT, 0644, global->num_philo);
+	global->eating = sem_open("/eating", O_CREAT, 0644, 1);
+	global->checker = sem_open("/checker", O_CREAT, 0644, 1);
+	global->printf = sem_open("/printf", O_CREAT, 0664, 1);
+	if (global->forks == SEM_FAILED || global->eating == SEM_FAILED
+		|| global->checker == SEM_FAILED || global->printf == SEM_FAILED)
 	{
 		free(global->person);
 		return (1);

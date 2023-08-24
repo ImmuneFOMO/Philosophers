@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: azhadan <azhadan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/23 18:24:17 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/24 16:31:37 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,21 @@ void	ft_free_philo(t_global *global)
 		waitpid(-1, &value, 0);
 		if (value != 0)
 		{
-			printf("				test %d\n", value);
 			i = -1;
 			while (++i < global->num_philo)
 				kill(global->person[i].pid, SIGTERM);
 			break ;
 		}
 	}
-	sem_close(&global->forks);
-	sem_close(&global->checker);
-	sem_close(&global->printf);
-	sem_close(&global->eating);
 	free(global->person);
+	sem_close(global->printf);
+	sem_close(global->checker);
+	sem_close(global->eating);
+	sem_close(global->forks);
+	sem_unlink("/printf");
+	sem_unlink("/checker");
+	sem_unlink("/eating");
+	sem_unlink("/forks");
 }
 
 void	ft_custom_sleep(long long time, t_global *global)
@@ -89,15 +92,17 @@ void	*ft_die_check(void *person)
 	philo = (t_person *)person;
 	while (1)
 	{
-		sem_wait(&philo->global->checker);
+		sem_wait(philo->global->checker);
 		time = current_time();
-		//printf("Current: %ld, current_time:%ld, start:%ld, dif:%ld, time_to_die:%ld\n",time, current_time(), philo->time_last_food, time - philo->time_last_food,philo->global->time_to_die);
+		// printf("Current: %ld, current_time:%ld, start:%ld, dif:%ld,
+		// time_to_die:%ld\n",time, current_time(), philo->time_last_food, time
+		//	- philo->time_last_food,philo->global->time_to_die);
 		if ((time - philo->time_last_food) >= philo->global->time_to_die)
 		{
 			philo_print(philo, "died", 0);
 			exit(1);
 		}
-		sem_post(&philo->global->checker);
+		sem_post(philo->global->checker);
 		usleep(1000);
 	}
 	return (NULL);
