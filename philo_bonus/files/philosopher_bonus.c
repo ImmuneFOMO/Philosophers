@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 20:45:54 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/24 20:48:16 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,19 @@ int	ft_check_args(char **argv, t_global *global)
 
 void	start_life(t_person *philo)
 {
-	printf("time start before anything:%ld\n", philo->time_last_food);
+	//printf("time start before anything:%ld\n", philo->time_last_food);
 	if (pthread_create(&philo->checker, NULL, &ft_die_check, philo))
 		exit(1);
 	if (pthread_detach(philo->checker))
 		exit(1);
-	printf("time start:%ld\n", philo->time_last_food);
+	//printf("time start:%ld\n", philo->time_last_food);
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
 	while (1)
 	{
-		printf("time before eat:%ld\n", philo->time_last_food);
+		//printf("time before eat:%ld\n", philo->time_last_food);
 		eating(philo);
-		printf("time after eat:%ld\n", philo->time_last_food);
+		//printf("time after eat:%ld\n", philo->time_last_food);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
 		philo->counter_fed++;
 		sem_post(philo->global->forks);
