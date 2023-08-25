@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/25 19:36:44 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/25 22:58:55 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,11 @@ int	hepler_start_philo(t_global *global)
 		if (global->person[i]->pid < 0)
 			return (1);
 		else if (global->person[i]->pid == 0)
+		{
 			start_life(global->person[i]);
+			free_allocated_memory(global, global->num_philo);
+			exit (0);
+		}
 		i++;
 	}
 	return (0);
@@ -61,11 +65,17 @@ void	free_allocated_memory(t_global *global, int num)
 {
 	int	i;
 
-	i = 0;
-	while (i < num)
+	if (global->person)
 	{
-		free(global->person[i]);
-		++i;
+		i = 0;
+		while (i < num)
+		{
+			if (global->person[i])
+			{
+				free(global->person[i]);
+			}
+			++i;
+		}
 	}
 	free(global->person);
 	sem_close(global->forks);

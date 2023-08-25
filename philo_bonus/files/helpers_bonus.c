@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/25 21:20:58 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/25 22:59:16 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,9 @@ void	ft_free_philo(t_global *global)
 	int			value;
 
 	i = -1;
-	printf("free pid\n");
 	while (++i < global->num_philo)
 	{
-		waitpid(-1, &value, 0);
+		waitpid(global->person[i]->pid, &value, 0);
 		if (value != 0)
 		{
 			i = -1;
@@ -62,8 +61,6 @@ void	ft_free_philo(t_global *global)
 			break ;
 		}
 	}
-	printf("free allocated\n");
-	free_allocated_memory(global, global->num_philo);
 }
 
 void	ft_custom_sleep(long long time, t_global *global)
@@ -91,7 +88,7 @@ void	*ft_die_check(void *person)
 		if ((time - philo->time_last_food) >= philo->global->time_to_die)
 		{
 			philo_print(philo, "died", 0);
-			exit(1);
+			return (NULL);
 		}
 		sem_post(philo->global->checker);
 		usleep(1000);
