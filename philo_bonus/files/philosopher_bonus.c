@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 20:48:16 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/25 21:19:11 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,32 +51,27 @@ int	ft_check_args(char **argv, t_global *global)
 	global->num_times_feed = 0;
 	if (argv[5])
 		global->num_times_feed = ft_atoi(argv[5]);
-	global->num_fed = 0;
-	global->go = 1;
 	return (0);
 }
 
 void	start_life(t_person *philo)
 {
-	//printf("time start before anything:%ld\n", philo->time_last_food);
 	if (pthread_create(&philo->checker, NULL, &ft_die_check, philo))
 		exit(1);
 	if (pthread_detach(philo->checker))
 		exit(1);
-	//printf("time start:%ld\n", philo->time_last_food);
+	exit(0);
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
 	while (1)
 	{
-		//printf("time before eat:%ld\n", philo->time_last_food);
+		if (philo->counter_fed == philo->global->num_times_feed)
+			exit(0);
 		eating(philo);
-		//printf("time after eat:%ld\n", philo->time_last_food);
 		ft_custom_sleep(philo->global->time_to_eat, philo->global);
 		philo->counter_fed++;
 		sem_post(philo->global->forks);
 		sem_post(philo->global->forks);
-		if (philo->counter_fed == philo->global->num_fed)
-			exit(0);
 		philo_print(philo, "is sleeping", 1);
 		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
 		philo_print(philo, "is thinking", 1);
@@ -86,11 +81,10 @@ void	start_life(t_person *philo)
 int	ft_start_philo(t_global *global)
 {
 	int	i;
-	int	j;
 
 	i = -1;
-	j = -1;
-	global->person = (t_person **)malloc(sizeof(t_person *) * global->num_philo);
+	global->person = (t_person **)malloc(sizeof(t_person *)
+			* global->num_philo);
 	if (!global->person)
 		return (1);
 	while (++i < global->num_philo)
@@ -98,9 +92,7 @@ int	ft_start_philo(t_global *global)
 		global->person[i] = (t_person *)malloc(sizeof(t_person));
 		if (!global->person[i])
 		{
-			while (++j < i)
-				free(global->person[j]);
-			free(global->person);
+			free_allocated_memory(global, i);
 			return (1);
 		}
 	}
@@ -108,18 +100,21 @@ int	ft_start_philo(t_global *global)
 	sem_unlink("/checker");
 	sem_unlink("/eating");
 	sem_unlink("/forks");
-	global->forks = sem_open("/forks", O_CREAT, 0644, global->num_philo);
-	global->eating = sem_open("/eating", O_CREAT, 0644, 1);
-	global->checker = sem_open("/checker", O_CREAT, 0644, 1);
 	global->printf = sem_open("/printf", O_CREAT, 0664, 1);
+	global->checker = sem_open("/checker", O_CREAT, 0644, 1);
+	global->eating = sem_open("/eating", O_CREAT, 0644, 1);
+	global->forks = sem_open("/forks", O_CREAT, 0644, global->num_philo);
 	if (global->forks == SEM_FAILED || global->eating == SEM_FAILED
 		|| global->checker == SEM_FAILED || global->printf == SEM_FAILED)
 	{
-		free(global->person);
+		free_allocated_memory(global, global->num_philo);
 		return (1);
 	}
 	if (hepler_start_philo(global))
+	{
+		free_allocated_memory(global, global->num_philo);
 		return (1);
+	}
 	return (0);
 }
 

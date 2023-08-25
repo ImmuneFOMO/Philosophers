@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 20:36:26 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/25 19:36:52 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ typedef struct person
 typedef struct global
 {
 	time_t				num_philo;
-	time_t				num_fed;
-	int					go;
 	time_t				time_to_die;
 	time_t				time_to_eat;
 	time_t				time_to_sleep;
@@ -68,5 +66,6 @@ void					*ft_die_check(void *person);
 void					philo_print(t_person *philo, char *str, int flag);
 void					eating(t_person *philo);
 int						hepler_start_philo(t_global *global);
+void					free_allocated_memory(t_global *global, int num);
 
 #endif

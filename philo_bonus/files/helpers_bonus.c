@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/24 21:48:27 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/25 21:20:58 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	ft_free_philo(t_global *global)
 	int			value;
 
 	i = -1;
+	printf("free pid\n");
 	while (++i < global->num_philo)
 	{
 		waitpid(-1, &value, 0);
@@ -61,15 +62,8 @@ void	ft_free_philo(t_global *global)
 			break ;
 		}
 	}
-	free(global->person);
-	sem_close(global->printf);
-	sem_close(global->checker);
-	sem_close(global->eating);
-	sem_close(global->forks);
-	sem_unlink("/printf");
-	sem_unlink("/checker");
-	sem_unlink("/eating");
-	sem_unlink("/forks");
+	printf("free allocated\n");
+	free_allocated_memory(global, global->num_philo);
 }
 
 void	ft_custom_sleep(long long time, t_global *global)
@@ -90,12 +84,10 @@ void	*ft_die_check(void *person)
 	time_t		time;
 
 	philo = (t_person *)person;
-	//printf("time start die check:%ld\n", philo->time_last_food);
 	while (1)
 	{
 		sem_wait(philo->global->checker);
 		time = current_time();
-		//printf("Current: %ld, current_time:%ld, time_last_food:%ld, dif:%ld, time_to_die:%ld\n", time, current_time(), philo->time_last_food, time - philo->time_last_food, philo->global->time_to_die);
 		if ((time - philo->time_last_food) >= philo->global->time_to_die)
 		{
 			philo_print(philo, "died", 0);
