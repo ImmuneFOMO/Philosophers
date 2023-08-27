@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/23 16:52:56 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 17:54:15 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ void	eating(t_person *philo)
 	philo_print(philo, "is eating", 1);
 	philo->time_last_food = current_time();
 	pthread_mutex_unlock(&philo->global->checker);
+	ft_custom_sleep(philo->global->time_to_eat, philo->global);
+	pthread_mutex_lock(&philo->global->checker);
+	philo->counter_fed++;
+	pthread_mutex_unlock(&philo->global->checker);
 }
 
 void	helper_die_check(t_global *global)
@@ -78,13 +82,9 @@ int	hepler_start_philo(t_global *global)
 {
 	long long	i;
 
-	pthread_mutex_init(&global->printf, NULL);
-	pthread_mutex_init(&global->checker, NULL);
-	pthread_mutex_init(&global->eating, NULL);
 	global->start_time = current_time();
-	global->locked = 0;
-	i = 0;
-	while (i < global->num_philo)
+	i = -1;
+	while (++i < global->num_philo)
 	{
 		if (i % 2 == 0)
 		{
@@ -103,7 +103,6 @@ int	hepler_start_philo(t_global *global)
 		if (pthread_create(&global->person[i].th, NULL, &start_life,
 				&global->person[i]))
 			return (1);
-		i++;
 	}
 	return (0);
 }

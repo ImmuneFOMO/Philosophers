@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:52:18 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 16:17:59 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 16:59:13 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void					ft_custom_sleep(long long time, t_global *global);
 void					*ft_die_check(void *person);
 // output_bonus.c
 void					philo_print(t_person *philo, char *str, int flag);
-void					eating(t_person *philo);
+int						eating(t_person *philo);
 int						hepler_start_philo(t_global *global, t_person *philos);
 void					free_allocated_memory(t_global *global, \
 t_person *philos);

@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 16:16:22 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 18:05:29 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	philo_print(t_person *philo, char *str, int flag)
 		sem_post(philo->global->printf);
 }
 
-void	eating(t_person *philo)
+int	eating(t_person *philo)
 {
 	sem_wait(philo->global->forks);
 	philo_print(philo, "has taken a fork", 1);
@@ -38,6 +38,15 @@ void	eating(t_person *philo)
 	philo->counter_fed++;
 	sem_post(philo->global->forks);
 	sem_post(philo->global->forks);
+	philo_print(philo, "is sleeping", 1);
+	ft_custom_sleep(philo->global->time_to_sleep, philo->global);
+	philo_print(philo, "is thinking", 1);
+	if (philo->counter_fed >= philo->global->num_times_feed && \
+		philo->global->num_times_feed > 0)
+	{
+		return (1);
+	}
+	return (0);
 }
 
 int	hepler_start_philo(t_global *global, t_person *philos)
@@ -60,7 +69,6 @@ int	hepler_start_philo(t_global *global, t_person *philos)
 			if (start_life(&philos[i]))
 				exit(0);
 		}
-		usleep(60);
 	}
 	ft_die(&philos[0], global, 0);
 	sem_wait(global->stop);

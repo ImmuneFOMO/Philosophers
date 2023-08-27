@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 16:16:13 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 18:06:01 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,13 @@ int	start_life(t_person *philo)
 		exit(1);
 	if (pthread_detach(philo->checker))
 		exit(1);
+	if (philo->id % 2)
+		ft_custom_sleep(30, philo->global);
 	while (1)
 	{
-		eating(philo);
-		if (philo->counter_fed >= philo->global->num_times_feed && \
-		philo->global->num_times_feed > 0)
+		if (philo->id % 2)
+			usleep(100);
+		if (eating(philo))
 		{
 			sem_post(philo->global->stop);
 			while (1)
@@ -83,9 +85,6 @@ int	start_life(t_person *philo)
 			}
 			return (1);
 		}
-		philo_print(philo, "is sleeping", 1);
-		ft_custom_sleep(philo->global->time_to_sleep, philo->global);
-		philo_print(philo, "is thinking", 1);
 	}
 	return (0);
 }

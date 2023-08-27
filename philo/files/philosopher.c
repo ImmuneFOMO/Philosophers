@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/18 16:24:30 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 17:54:38 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ int	ft_check_args(char **argv, t_global *global)
 		global->num_times_feed = ft_atoi(argv[5]);
 	global->num_fed = 0;
 	global->go = 1;
+	pthread_mutex_init(&global->printf, NULL);
+	pthread_mutex_init(&global->checker, NULL);
+	pthread_mutex_init(&global->eating, NULL);
+	global->locked = 0;
 	return (0);
 }
 
@@ -70,11 +74,12 @@ void	*start_life(void *arg)
 		ft_custom_sleep(40, philo->global);
 	while (get_go(philo->global))
 	{
+		if (philo->id % 2)
+			usleep(100);
+		if (philo->global->num_times_feed > 0 && \
+		philo->counter_fed >= philo->global->num_times_feed)
+			break ;
 		eating(philo);
-		ft_custom_sleep(philo->global->time_to_eat, philo->global);
-		pthread_mutex_lock(&philo->global->checker);
-		philo->counter_fed++;
-		pthread_mutex_unlock(&philo->global->checker);
 		pthread_mutex_unlock(&philo->global->forks[philo->left_hand]);
 		pthread_mutex_unlock(&philo->global->forks[philo->right_hand]);
 		philo_print(philo, "is sleeping", 1);
