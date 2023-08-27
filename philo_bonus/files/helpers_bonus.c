@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 01:50:51 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 15:25:24 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,14 @@ time_t	current_time(void)
 	return ((time.tv_usec / 1000) + (time.tv_sec * 1000));
 }
 
-void	ft_free_philo(t_global *global)
+void	ft_free_philo(t_global *global, t_person *philo)
 {
 	long long	i;
-	int			value;
 
 	i = -1;
 	while (++i < global->num_philo)
-	{
-		waitpid(-1, &value, 0);
-		if (value != 0)
-		{
-			i = -1;
-			while (++i < global->num_philo)
-				kill(global->person[i]->pid, SIGTERM);
-			break ;
-		}
-	}
+		kill(philo[i].pid, SIGKILL);
+	free_allocated_memory(global, philo);
 }
 
 void	ft_custom_sleep(long long time, t_global *global)
@@ -89,14 +80,14 @@ void	*ft_die_check(void *person)
 		{
 			sem_post(philo->global->checker);
 			philo_print(philo, "died", 0);
-			philo->global->life = 0;
+			ft_die(philo, philo->global, 1);
 			return (NULL);
 		}
-		if (philo->counter_fed >= philo->global->num_times_feed && \
-		philo->global->num_times_feed > 0)
+		if ((philo->counter_fed >= philo->global->num_times_feed) && \
+		(philo->global->num_times_feed > 0))
 		{
 			sem_post(philo->global->checker);
-			break ;
+			return (NULL);
 		}
 		sem_post(philo->global->checker);
 	}

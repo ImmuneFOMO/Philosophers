@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 02:13:23 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 16:16:22 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ void	eating(t_person *philo)
 	philo_print(philo, "is eating", 1);
 	philo->time_last_food = current_time();
 	sem_post(philo->global->checker);
+	ft_custom_sleep(philo->global->time_to_eat, philo->global);
+	philo->counter_fed++;
+	sem_post(philo->global->forks);
+	sem_post(philo->global->forks);
 }
 
 int	hepler_start_philo(t_global *global, t_person *philos)
@@ -41,8 +45,8 @@ int	hepler_start_philo(t_global *global, t_person *philos)
 	long long	i;
 
 	global->start_time = current_time();
-	i = 0;
-	while (i < global->num_philo)
+	i = -1;
+	while (++i < global->num_philo)
 	{
 		philos[i].id = i + 1;
 		philos[i].global = global;
@@ -57,23 +61,45 @@ int	hepler_start_philo(t_global *global, t_person *philos)
 				exit(0);
 		}
 		usleep(60);
-		i++;
 	}
-	ft_free_philo(global);
+	ft_die(&philos[0], global, 0);
+	sem_wait(global->stop);
+	ft_free_philo(global, philos);
 	return (0);
 }
 
 void	free_allocated_memory(t_global *global, t_person *philos)
 {
-	free(global);
-	free(philos);
-	free(global->person);
 	sem_close(global->forks);
 	sem_close(global->eating);
 	sem_close(global->checker);
 	sem_close(global->printf);
+	sem_close(global->stop);
+	sem_unlink("/stop");
 	sem_unlink("/printf");
 	sem_unlink("/checker");
 	sem_unlink("/eating");
 	sem_unlink("/forks");
+	free(global);
+	free(philos);
+}
+
+void	ft_die(t_person *philo, t_global *global, int flag)
+{
+	int	i;
+
+	i = -1;
+	if (flag)
+	{
+		while (++i < philo->global->num_philo)
+			sem_post(philo->global->stop);
+	}
+	else
+	{
+		if (global->num_times_feed > 0)
+		{
+			while (++i < global->num_philo - 1)
+				sem_wait(global->stop);
+		}
+	}
 }
