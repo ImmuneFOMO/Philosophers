@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 21:15:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/25 22:58:55 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 02:13:23 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	philo_print(t_person *philo, char *str, int flag)
 	sem_wait(philo->global->printf);
 	time = current_time();
 	printf("%05lld %ld %s\n", time - philo->global->start_time, philo->id, str);
-	sem_post(philo->global->printf);
+	if (flag)
+		sem_post(philo->global->printf);
 }
 
 void	eating(t_person *philo)
@@ -35,7 +36,7 @@ void	eating(t_person *philo)
 	sem_post(philo->global->checker);
 }
 
-int	hepler_start_philo(t_global *global)
+int	hepler_start_philo(t_global *global, t_person *philos)
 {
 	long long	i;
 
@@ -43,40 +44,29 @@ int	hepler_start_philo(t_global *global)
 	i = 0;
 	while (i < global->num_philo)
 	{
-		global->person[i]->id = i + 1;
-		global->person[i]->global = global;
-		global->person[i]->counter_fed = 0;
-		global->person[i]->time_last_food = global->start_time;
-		global->person[i]->pid = fork();
-		if (global->person[i]->pid < 0)
+		philos[i].id = i + 1;
+		philos[i].global = global;
+		philos[i].counter_fed = 0;
+		philos[i].time_last_food = 0;
+		philos[i].pid = fork();
+		if (philos[i].pid < 0)
 			return (1);
-		else if (global->person[i]->pid == 0)
+		else if (philos[i].pid == 0)
 		{
-			start_life(global->person[i]);
-			free_allocated_memory(global, global->num_philo);
-			exit (0);
+			if (start_life(&philos[i]))
+				exit(0);
 		}
+		usleep(60);
 		i++;
 	}
+	ft_free_philo(global);
 	return (0);
 }
 
-void	free_allocated_memory(t_global *global, int num)
+void	free_allocated_memory(t_global *global, t_person *philos)
 {
-	int	i;
-
-	if (global->person)
-	{
-		i = 0;
-		while (i < num)
-		{
-			if (global->person[i])
-			{
-				free(global->person[i]);
-			}
-			++i;
-		}
-	}
+	free(global);
+	free(philos);
 	free(global->person);
 	sem_close(global->forks);
 	sem_close(global->eating);

@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 09:29:26 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/25 22:59:16 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 01:50:51 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_free_philo(t_global *global)
 	i = -1;
 	while (++i < global->num_philo)
 	{
-		waitpid(global->person[i]->pid, &value, 0);
+		waitpid(-1, &value, 0);
 		if (value != 0)
 		{
 			i = -1;
@@ -87,11 +87,18 @@ void	*ft_die_check(void *person)
 		time = current_time();
 		if ((time - philo->time_last_food) >= philo->global->time_to_die)
 		{
+			sem_post(philo->global->checker);
 			philo_print(philo, "died", 0);
+			philo->global->life = 0;
 			return (NULL);
 		}
+		if (philo->counter_fed >= philo->global->num_times_feed && \
+		philo->global->num_times_feed > 0)
+		{
+			sem_post(philo->global->checker);
+			break ;
+		}
 		sem_post(philo->global->checker);
-		usleep(1000);
 	}
 	return (NULL);
 }
