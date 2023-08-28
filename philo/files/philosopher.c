@@ -6,7 +6,7 @@
 /*   By: azhadan <azhadan@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 01:51:17 by azhadan           #+#    #+#             */
-/*   Updated: 2023/08/27 17:54:38 by azhadan          ###   ########.fr       */
+/*   Updated: 2023/08/27 18:32:52 by azhadan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	*start_life(void *arg)
 	if (philo->global->num_philo == 1)
 	{
 		philo_print(philo, "has taken a fork", 1);
-		return (NULL);
+		ft_custom_sleep(philo->global->time_to_die, philo->global);
 	}
 	if (philo->global->num_philo > 1 && philo->id % 2)
 		ft_custom_sleep(40, philo->global);
